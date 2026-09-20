@@ -115,19 +115,27 @@ SectionEnd
 
 Function .onInit
 	# Check for path from command line flag
-	StrCmp $INSTDIR "" "" InstallPathIsFound
+	StrCmp $INSTDIR "" RequestInstallPath ""
+	IfFileExists "$INSTDIR\system\Gothic2.exe" InstallPathIsGood
+	IfSilent SilentInstallPathIsBad RequestInstallPath
+
 	SetRegView 32
 	ReadRegStr $INSTDIR HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\Steam App 39510" "InstallLocation"
-	StrCmp $INSTDIR "" "" InstallPathIsFound
+	StrCmp $INSTDIR "" Check64BitRegView ""
+	IfFileExists "$INSTDIR\system\Gothic2.exe" InstallPathIsGood
+
+	Check64BitRegView:
 	SetRegView 64
 	ReadRegStr $INSTDIR HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\Steam App 39510" "InstallLocation"
-	StrCmp $INSTDIR "" "" InstallPathIsFound
-	# Nothing found. Set a default.
-	StrCpy $INSTDIR "$PROGRAMFILES\Steam\steamapps\common\Gothic II"
-
-	InstallPathIsFound:
+	StrCmp $INSTDIR "" CheckCommonSteamPath ""
 	IfFileExists "$INSTDIR\system\Gothic2.exe" InstallPathIsGood
-	IfSilent "" RequestInstallPath
+
+	CheckCommonSteamPath:
+	StrCpy $INSTDIR "$PROGRAMFILES\Steam\steamapps\common\Gothic II"
+	IfFileExists "$INSTDIR\system\Gothic2.exe" InstallPathIsGood
+	IfSilent SilentInstallPathIsBad RequestInstallPath
+
+	SilentInstallPathIsBad:
 	SetErrorLevel 2
 	Abort
 
