@@ -4,7 +4,7 @@ var DirectoryText
 !include "MUI.nsh"
 
 ###################################
-##            �������            ##
+##            Macro              ##
 ###################################
 
 !macro GMF_File_Rename FILENAME_1 FILENAME_2
@@ -15,7 +15,7 @@ var DirectoryText
 !macroend
 
 ###################################
-##            ��������           ##
+##            Main               ##
 ###################################
 
 !define MOD_NAME "Gothic 2 Steam Fix"
@@ -28,12 +28,12 @@ OutFile "Gothic_2_Steam_Fix_${MOD_VERSION}.exe"
 
 VIProductVersion "${MOD_DETAILED_VERSION}"
 VIAddVersionKey "FileVersion" "${MOD_DETAILED_VERSION}"
-VIAddVersionKey "LegalCopyright" "� ${MOD_AUTHOR}"
+VIAddVersionKey "LegalCopyright" "© ${MOD_AUTHOR}"
 VIAddVersionKey "FileDescription" "${MOD_NAME} Install"
 VIAddVersionKey "ProductVersion" "${MOD_VERSION}"
 
 ###################################
-##      ��������� ����������     ##
+##      Interface settings       ##
 ###################################
 
 !define MUI_ICON "icon.ico"
@@ -57,7 +57,7 @@ DirText $DirectoryText
 BrandingText " "
 
 ###################################
-##     ��������  ������������    ##
+##     Installer pages           ##
 ###################################
 
 !insertmacro MUI_PAGE_WELCOME
@@ -66,13 +66,13 @@ BrandingText " "
 !insertmacro MUI_PAGE_FINISH
 
 ###################################
-##             �����             ##
+##         Languages             ##
 ###################################
 
 !insertmacro MUI_LANGUAGE "English"
 
 ###################################
-##          �����������          ##
+##          Installing           ##
 ###################################
 
 Section "Main" SecMain
@@ -110,7 +110,7 @@ Section "Main" SecMain
 SectionEnd
 
 ###################################
-##            �������            ##
+##          Functions            ##
 ###################################
 
 Function .onInit
