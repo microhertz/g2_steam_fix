@@ -114,11 +114,12 @@ SectionEnd
 ###################################
 
 Function .onInit
-	# Check for path from command line flag
-	StrCmp $INSTDIR "" RequestInstallPath ""
+	# Check for path from /D= flag
+	StrCmp $INSTDIR "" Check32BitRegView ""
 	IfFileExists "$INSTDIR\system\Gothic2.exe" InstallPathIsGood
 	IfSilent SilentInstallPathIsBad RequestInstallPath
 
+	Check32BitRegView:
 	SetRegView 32
 	ReadRegStr $INSTDIR HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\Steam App 39510" "InstallLocation"
 	StrCmp $INSTDIR "" Check64BitRegView ""
