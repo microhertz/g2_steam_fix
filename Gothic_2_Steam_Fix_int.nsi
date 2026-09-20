@@ -4,7 +4,7 @@ var DirectoryText
 !include "MUI.nsh"
 
 ###################################
-##            Макросы            ##
+##            пїЅпїЅпїЅпїЅпїЅпїЅпїЅ            ##
 ###################################
 
 !macro GMF_File_Rename FILENAME_1 FILENAME_2
@@ -15,7 +15,7 @@ var DirectoryText
 !macroend
 
 ###################################
-##            Основное           ##
+##            пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ           ##
 ###################################
 
 !define MOD_NAME "Gothic 2 Steam Fix"
@@ -28,12 +28,12 @@ OutFile "Gothic_2_Steam_Fix_${MOD_VERSION}.exe"
 
 VIProductVersion "${MOD_DETAILED_VERSION}"
 VIAddVersionKey "FileVersion" "${MOD_DETAILED_VERSION}"
-VIAddVersionKey "LegalCopyright" "© ${MOD_AUTHOR}"
+VIAddVersionKey "LegalCopyright" "пїЅ ${MOD_AUTHOR}"
 VIAddVersionKey "FileDescription" "${MOD_NAME} Install"
 VIAddVersionKey "ProductVersion" "${MOD_VERSION}"
 
 ###################################
-##      Настройки интерфейса     ##
+##      пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ     ##
 ###################################
 
 !define MUI_ICON "icon.ico"
@@ -57,7 +57,7 @@ DirText $DirectoryText
 BrandingText " "
 
 ###################################
-##     Страницы  инсталлятора    ##
+##     пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ  пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ    ##
 ###################################
 
 !insertmacro MUI_PAGE_WELCOME
@@ -66,13 +66,13 @@ BrandingText " "
 !insertmacro MUI_PAGE_FINISH
 
 ###################################
-##             Языки             ##
+##             пїЅпїЅпїЅпїЅпїЅ             ##
 ###################################
 
 !insertmacro MUI_LANGUAGE "English"
 
 ###################################
-##          Инсталляция          ##
+##          пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ          ##
 ###################################
 
 Section "Main" SecMain
@@ -110,22 +110,34 @@ Section "Main" SecMain
 SectionEnd
 
 ###################################
-##            Функции            ##
+##            пїЅпїЅпїЅпїЅпїЅпїЅпїЅ            ##
 ###################################
 
 Function .onInit
-	StrCpy $DirectoryText "Gothic II: Gold Edition installation folder is found, press 'Install' button to continue or 'Browse...' to select another install location."
+	# Check for path from command line flag
+	StrCmp $INSTDIR "" "" InstallPathIsFound
 	SetRegView 32
 	ReadRegStr $INSTDIR HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\Steam App 39510" "InstallLocation"
 	StrCmp $INSTDIR "" "" InstallPathIsFound
 	SetRegView 64
 	ReadRegStr $INSTDIR HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\Steam App 39510" "InstallLocation"
 	StrCmp $INSTDIR "" "" InstallPathIsFound
+	# Nothing found. Set a default.
+	StrCpy $INSTDIR "$PROGRAMFILES\Steam\steamapps\common\Gothic II"
+
 	InstallPathIsFound:
 	IfFileExists "$INSTDIR\system\Gothic2.exe" InstallPathIsGood
-	StrCpy $INSTDIR "$PROGRAMFILES\Steam\steamapps\common\Gothic II"
+	IfSilent "" RequestInstallPath
+	SetErrorLevel 2
+	Abort
+
+	RequestInstallPath:
 	StrCpy $DirectoryText "Please select your Gothic II: Gold Edition installation folder (e.g. Steam\steamapps\common\Gothic II)."
+	Goto Done
+
 	InstallPathIsGood:
+	StrCpy $DirectoryText "Gothic II: Gold Edition installation folder is found, press 'Install' button to continue or 'Browse...' to select another install location."
+	Done:
 FunctionEnd
 
 Function .onVerifyInstDir
